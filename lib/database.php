@@ -28,7 +28,7 @@ class Database extends PDO
       $this->user,
       $this->pass,
       $this->dbname,
-      $this->dbport,
+      $this->dbport
     );
     if (!$this->link) {
       $this->error = "Connection fail" . $this->link->connect_error;
