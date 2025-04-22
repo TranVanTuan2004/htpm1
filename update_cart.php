@@ -20,3 +20,5 @@ if ($result === 'out of stock') {
 }
 echo json_encode($data);
 exit;
+
+// 
