@@ -1,25 +1,16 @@
-FROM php:7.4.3-fpm
+# Sử dụng PHP 8.1 với Apache
+FROM php:8.1-apache
 
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip
+# Cài đặt MySQLi và các extension cần thiết
+RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Cài đặt các phần mềm hỗ trợ khác nếu cần (ví dụ: curl, zip, v.v.)
+RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install gd
 
-RUN pecl install apcu-5.1.20 && docker-php-ext-enable apcu
+# Copy mã nguồn vào container (nếu cần)
+COPY . /var/www/html
 
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd mysqli
-
-WORKDIR /var/www
-
-COPY . /var/www/
-
-RUN chown -R www-data:www-data /var/www
-
-# CMD ["/usr/local/bin/start"]
-CMD ["php-fpm"]
+# Kích hoạt mod_rewrite (nếu cần cho Laravel hoặc các ứng dụng PHP)
+RUN a2enmod rewrite
